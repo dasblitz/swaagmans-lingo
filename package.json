@@ -1,0 +1,42 @@
+{
+  "name": "",
+  "private": true,
+  "sideEffects": false,
+  "type": "module",
+  "scripts": {
+    "build": "remix vite:build",
+    "deploy": "npm run build && partykit deploy --define DEVMODE=false --serve ./build/client",
+    "dev": "concurrently \"partykit dev --define DEVMODE=true\" \"remix vite:dev\" --kill-others-on-fail",
+    "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
+    "start": "partykit dev --define DEVMODE=false --serve ./build/client",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@remix-run/react": "^2.8.1",
+    "partymix": "^0.0.15",
+    "partysocket": "^1.0.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
+  },
+  "devDependencies": {
+    "@remix-run/dev": "^2.8.1",
+    "@types/react": "^18.2.66",
+    "@types/react-dom": "^18.2.22",
+    "@typescript-eslint/eslint-plugin": "^7.2.0",
+    "concurrently": "^8.2.2",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-react": "^7.34.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "partykit": "^0.0.100",
+    "typescript": "^5.4.2",
+    "vite": "^5.1.6",
+    "vite-tsconfig-paths": "^4.3.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
