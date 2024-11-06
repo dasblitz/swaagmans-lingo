@@ -1,10 +1,10 @@
 import type { MetaFunction } from "partymix";
-import WhosHere from "~/components/whos-here";
+import WhosHere from "~/components/new-game-screen";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "New Remix SPA" },
-    { name: "description", content: "Welcome to Remix (SPA Mode)!" },
+    { title: "Welkom bij Warffum's Swaagmans Lingo" },
+    { name: "description", content: "Speel Swaagmans Lingo tijdens de Warffum lichtjesweek" },
   ];
 };
 

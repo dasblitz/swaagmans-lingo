@@ -1,15 +1,14 @@
 import { usePartySocket } from "partysocket/react";
 import {  useState } from "react";
 import type { State } from "../../messages";
-// import countryCodeEmoji from "./country-code-emoji";
 
 const generateRoom = () => {
   return Math.floor((Math.random() * 10000))
 }
 
 // This is a component that will connect to the partykit backend
-// and display the number of connected users, and where they're from.
-export default function WhosHere() {
+// and display the players in the game.
+export default function NewGameScreen() {
   const [gameState, setGameState] = useState<State | undefined>();
   const [gameId] = useState<number>(generateRoom())
   
@@ -18,6 +17,7 @@ export default function WhosHere() {
     party: "lingo",
     // create a random room id, players can use this id to join
     room: String(gameId),
+    
     onOpen() {
       console.log('client open')
     },
