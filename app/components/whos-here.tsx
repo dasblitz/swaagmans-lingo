@@ -1,37 +1,40 @@
 import { usePartySocket } from "partysocket/react";
-import { useState } from "react";
+import {  useState } from "react";
 import type { State } from "../../messages";
-import countryCodeEmoji from "./country-code-emoji";
+// import countryCodeEmoji from "./country-code-emoji";
+
+const generateRoom = () => {
+  return Math.floor((Math.random() * 10000))
+}
 
 // This is a component that will connect to the partykit backend
 // and display the number of connected users, and where they're from.
 export default function WhosHere() {
-  const [users, setUsers] = useState<State | undefined>();
-
+  const [gameState, setGameState] = useState<State | undefined>();
+  const [gameId] = useState<number>(generateRoom())
+  
   usePartySocket({
-    // connect to the party defined by 'geo.ts'
-    party: "geo",
-    // this can be any name, we just picked 'index'
-    room: "index",
+    // connect to the party defined by 'lingo.ts'
+    party: "lingo",
+    // create a random room id, players can use this id to join
+    room: String(gameId),
+    onOpen() {
+      console.log('client open')
+    },
     onMessage(evt) {
+      console.log('client message')
       const data = JSON.parse(evt.data) as State;
-      setUsers(data);
+      setGameState(data);
     },
   });
 
-  return !users ? (
+  return !gameState ? (
     "Connecting..."
   ) : (
     <div className="presence">
-      <b>Who&apos;s here?</b>
-      <br />
-      {users?.total} user{users?.total !== 1 ? "s" : ""} online. (
-      {Object.entries(users?.from || {})
-        .map(([from, count]) => {
-          return `${count} from ${countryCodeEmoji(from)}`;
-        })
-        .join(", ")}
-      )
+      <h1>Join the game</h1>
+      <p>Use code {gameId}</p>
+      {gameState.players.map(player => <p key={player.name}>{player.name} joined.</p>)}
     </div>
   );
 }
