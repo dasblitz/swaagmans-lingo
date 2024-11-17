@@ -6,6 +6,13 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
+export function links(){
+  return {
+    rel: 'stylesheet',
+    href: '/styles.css'
+  }
+}
+
 export default function App() {
   return (
     <html lang="en">
@@ -14,6 +21,7 @@ export default function App() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+
       </head>
       <body>
         <Outlet />

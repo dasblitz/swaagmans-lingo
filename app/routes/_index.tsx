@@ -1,5 +1,5 @@
 import type { MetaFunction } from "partymix";
-import WhosHere from "~/components/new-game-screen";
+import NewGameScreen from "~/components/new-game-screen";
 
 export const meta: MetaFunction = () => {
   return [
@@ -11,7 +11,7 @@ export const meta: MetaFunction = () => {
 export default function Index() {
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>
-      <WhosHere />
+      <NewGameScreen />
     </div>
   );
 }
