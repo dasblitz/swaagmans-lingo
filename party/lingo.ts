@@ -9,6 +9,7 @@ import type * as Party from "partykit/server";
 function createMutableGame(connectionState: Party.ConnectionState<State>) {
   return {
     state: connectionState!.state,
+    hint: [...connectionState!.hint],
     players: connectionState!.players.map((player) => ({
       ...player,
       lingo: [...player.lingo],
@@ -73,6 +74,7 @@ export default class MyRemix implements Party.Server {
 
   // we'll store the state in memory
   game: State = {
+    hint: ['t'],
     players: [],
     state: "idle",
   };
@@ -168,6 +170,7 @@ export default class MyRemix implements Party.Server {
     const game = createMutableGame(connection.state);
     // and update our state
     this.game = {
+      ...game,
       state: game.players.length < 2 ? "idle" : this.game.state,
       players: game.players.filter((player) => player.id !== connection.id),
     };

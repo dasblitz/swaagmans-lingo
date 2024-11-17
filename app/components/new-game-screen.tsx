@@ -45,7 +45,7 @@ export default function NewGameScreen() {
       : (
       <>
         <h1>Game started</h1>
-        <p>It&apos;s {gameState?.currentPlayer?.name}&apos; turn</p>
+        <p>It&apos;s {gameState?.currentPlayer?.name}&apos;s turn</p>
         <Attempt gameState={gameState} />
       </>
       )}

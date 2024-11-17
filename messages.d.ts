@@ -18,6 +18,7 @@ export interface Player {
 }
 
 export interface State {
+  hint: string[]
   players: Array<Player>
   currentPlayer?: Player
   state: 'idle' | 'playing' | 'finished'

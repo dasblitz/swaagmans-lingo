@@ -1,76 +1,107 @@
+:root {
+  --rotateY: 0;
+}
+
 ol {
-    padding: 0;
+  padding: 0;
+}
+
+li {
+  display: flex;
+}
+
+.letter-box {
+  position: relative;
+  background: #4d769c;
+  display: inline-flex;
+  width: 5rem;
+  height: 5rem;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  border: 0.5rem #193885 solid;
+}
+
+.letter-box:before,
+.letter-box:after {
+  position: absolute;
+  display: block;
+  content: " ";
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  animation: appear 0.4s var(--stateDelay) forwards;
+}
+
+.letter-box:before {
+  background: #4d769c;
+}
+
+.letter-box:after {
+  z-index: 1;
+}
+
+.letter-box:has(.letter--incorrect-pos):after {
+  border-radius: 50%;
+  background-color: #e5e518;
+}
+
+.letter-box:has(.letter--correct-pos):after {
+  background-color: #d441f3;
+}
+
+.letter-box:has(.letter.correct-word.letter--correct-pos):after {
+  animation: appear 0.4s var(--stateDelay) forwards, blink 1s calc(var(--stateDelay) / 1.7 + 2s) 3;
+}
+
+.letter {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 3rem;
+  text-transform: uppercase;
+  font-family: Arial;
+  text-shadow: 2px 2px 1px #726a6a;
+  --delay: 0;
+  opacity: 0;
+  position: relative;
+  z-index: 2;
+  animation: appear 0.4s var(--delay) forwards;
+}
+
+.letter.correct-word {
+  animation: appear 0.4s var(--delay) forwards, rotate 1s calc(var(--stateDelay) / 1.5 + 2s) 3;
+}
+
+@keyframes rotate {
+  from {
+    opacity: 1;
+    transform: rotateY(0deg);
   }
 
-  li {
-    display: flex;
+  to {
+    opacity: 1;
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes blink {
+  from {
+    background-color: #d441f3;
   }
 
-  .letter-box {
-    position: relative;
-    background: #4d769c;
-    display: inline-flex;
-    width: 5rem;
-    height: 5rem;
-    align-content: center;
-    justify-content: center;
-    align-items: center;
-    border: 0.5rem #193885 solid;
+  to {
+    background-color: white;
   }
+}
 
-  .letter {
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    color: white;
-    font-size: 3rem;
-    text-transform: uppercase;
-    font-family: Arial;
-    text-shadow: 2px 2px 1px #726a6a;
-    z-index: 1;
-  }
-
-  .letter {
-    --delay: 0;
+@keyframes appear {
+  from {
     opacity: 0;
-    animation: appear 0.4s forwards;
-    animation-delay: var(--delay);
   }
 
-  .letter:before,
-  .letter:after {
-    position: absolute;
-    display: block;
-    content: ' ';
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    animation: appear 0.4s forwards;
-    animation-delay: var(--stateDelay);
+  to {
+    opacity: 1;
   }
-
-  .letter:after {
-    background: #4d769c;
-    z-index: -2;
-  }
-
-  .letter--incorrect-pos:before {
-    border-radius: 50%;
-    background: #e5e518;
-    z-index: -1;
-  }
-
-  .letter--correct-pos:before {
-    background: #d441f3;
-    z-index: -1;
-  }
-
-  @keyframes appear {
-    from {
-        opacity: 0;
-    } 
-
-    to {
-        opacity: 1;
-    }
-  }
+}
