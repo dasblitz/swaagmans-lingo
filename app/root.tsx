@@ -23,7 +23,7 @@ export default function App() {
         <Links />
 
       </head>
-      <body>
+      <body className="theme-98">
         <Outlet />
         <ScrollRestoration />
         <Scripts />

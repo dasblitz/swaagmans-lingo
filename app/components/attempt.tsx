@@ -4,78 +4,33 @@ interface AttemptProps {
   gameState: State;
 }
 
-const getAttemptLines = (
+export const getAttemptLines = (
   remainingLines: number,
   previousAttempt: boolean,
-  hint: string[]
+  hint: string[],
+  numColumns = 5,
 ) => {
   const attemptLines = [];
 
   for (let i = 0; i < remainingLines; i++) {
     const isFirst = !previousAttempt && i === 0;
-    console.log({ previousAttempt, isFirst });
+
     attemptLines.push(
-      <li key={`remaining-${i}`}>
-        <span className="letter-box">
-          {isFirst ? (
-            <span
-              className="letter"
-              style={{
-                "--delay": `${0.2}s`,
-              }}
-            >
-              {hint[0]}
-            </span>
-          ) : null}
-        </span>
-        <span className="letter-box">
-          {isFirst ? (
-            <span
-              className="letter"
-              style={{
-                "--delay": `${0.2}s`,
-              }}
-            >
-              .
-            </span>
-          ) : null}
-        </span>
-        <span className="letter-box">
-          {isFirst ? (
-            <span
-              className="letter"
-              style={{
-                "--delay": `${0.2}s`,
-              }}
-            >
-              .
-            </span>
-          ) : null}
-        </span>
-        <span className="letter-box">
-          {isFirst ? (
-            <span
-              className="letter"
-              style={{
-                "--delay": `${0.2}s`,
-              }}
-            >
-              .
-            </span>
-          ) : null}
-        </span>
-        <span className="letter-box">
-          {isFirst ? (
-            <span
-              className="letter"
-              style={{
-                "--delay": `${0.2}s`,
-              }}
-            >
-              .
-            </span>
-          ) : null}
-        </span>
+      <li key={`remaining-${i}`} style={{'--numColumns': numColumns}}>
+        {Array.from(Array(numColumns)).map((col, index) => (
+          <span key={col} className="letter-box">
+            {isFirst ? (
+              <span
+                className="letter"
+                style={{
+                  "--delay": `${0.2}s`,
+                }}
+              >
+                {index === 0 ? hint[0] : '.'}
+              </span>
+            ) : null}
+          </span>
+        ))}
       </li>
     );
   }

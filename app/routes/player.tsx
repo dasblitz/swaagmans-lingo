@@ -1,17 +1,15 @@
+import { useSearchParams } from "@remix-run/react";
 import { State } from "messages"
 import {usePartySocket} from "partysocket/react"
 import { ChangeEvent, useState } from "react"
 import { Attempt } from "~/components/attempt"
 
 export default function Player() {
+    const [searchParams] = useSearchParams();
+    const gameRoomParam = searchParams.get('game-room')
     const [gameState, setGameState] = useState<State>()
     const [player, setPlayer] = useState<{name: string}>({name: ''})
     const [guess, setGuess] = useState<string>('')
-    const [room, setRoom] = useState<string>('')
-    
-    const handleChangeRoom = (event: ChangeEvent<HTMLInputElement>) => {
-        setRoom(event.currentTarget.value)
-    }
 
     const handleOnChangePlayerName = (event: ChangeEvent<HTMLInputElement>) => {
         const val = event.currentTarget.value
@@ -32,7 +30,7 @@ export default function Player() {
         // connect to the party defined by 'lingo.ts'
         party: "lingo",
         // this can be any name, we just picked 'index'
-        room: 'idlePlayer',
+        room: gameRoomParam || 'no-room',
         onOpen() {
             console.log('client open')
         },
@@ -45,17 +43,25 @@ export default function Player() {
 
     
         
-    const handleJoinGame = () => {
+    const handleJoinGame = (event) => {
+        if (!gameRoomParam) {
+            console.warn('no game room found to join')
+            return;
+        }
+
         socket.updateProperties({
             party: "lingo",
-            room: room,
+            room: gameRoomParam,
         })
         socket.reconnect()
         socket.send(JSON.stringify({message: 'playerJoin', player}))
+        event.preventDefault();
     }
 
-    const handleSubmitGuess = () => {
+    const handleSubmitGuess = (event) => {
         socket.send(JSON.stringify({message: 'playerGuess', player, guess}))
+
+        event.preventDefault()
     }
     
     console.log({gameState})
@@ -63,26 +69,27 @@ export default function Player() {
     return (
         <>
             {gameState?.state === 'idle' && gameState.players.length === 1 ? (
-                <p>Waiting for other player</p>
+                <p>Wachten op andere spelers</p>
             ) : null}
             {gameState?.state === 'idle' ? (
                 <>
-                <p>Type the code on the big screen to join</p>
-                <label htmlFor="player-name">What is your name?</label>
-                <input id="player-name" type="text" onChange={handleOnChangePlayerName} value={player.name}/>
-                <label htmlFor="game-code">Enter the game code</label>
-                <input id="game-code" type="number" onChange={handleChangeRoom} value={room}/>
-                <button onClick={handleJoinGame}>Join</button>
+                <label htmlFor="player-name">Wat is je naam?</label>
+                <form onSubmit={handleJoinGame}>
+                    <input id="player-name" type="text" onChange={handleOnChangePlayerName} value={player.name}/>
+                    <button >Ik doe mee</button>
+                </form>
                 </>
                 ) : null 
             }
             {
                 gameState?.state === 'playing' && socket.id === gameState?.currentPlayer?.id ?
                 <>
-                    <p>It&apos;s your turn!</p>
+                    <p>Jij bent aan de beurt</p>
                     <Attempt gameState={gameState} />
-                    <input type="text" onChange={handleOnChangeGuess}/>
-                    <button onClick={handleSubmitGuess}>Send</button>
+                    <form onSubmit={handleSubmitGuess}>
+                        <input type="text" onChange={handleOnChangeGuess}/>
+                        <button>Verstuur</button>
+                    </form>
                 </> 
                 : null 
             }

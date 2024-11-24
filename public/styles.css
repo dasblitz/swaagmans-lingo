@@ -2,24 +2,164 @@
   --rotateY: 0;
 }
 
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  background: black;
+  overflow: hidden;
+  padding: 1rem;
+}
+
+/* Main Background Container */
+.background {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  width: 100vw;
+  height: 100vh;
+  /* background: 
+    radial-gradient(circle at 20% 30%, rgb(74, 74, 226), transparent 60%),
+    radial-gradient(circle at 60% 20%, rgb(185, 55, 185), transparent 60%),
+    radial-gradient(circle at 80% 50%, lightblue, transparent 70%),
+    radial-gradient(circle at 10% 80%, pink, transparent 50%),
+    radial-gradient(circle at 50% 50%, violet, transparent 40%); */
+  background-image: url("/lingo-bg.png");
+  background-size: 103%;
+  background-blend-mode: multiply;
+  background-position: center;
+  overflow: hidden;
+}
+
+.presence {
+  position: relative;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  font-family: serif;
+  color: #ffffff;
+  font-size: 4.5rem;
+  text-align: center;
+  font-weight: 900;
+  line-height: 1;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+
+  &.in-game {
+    transform: scale(0.6) translate3d(-72%, -54%, 0);
+    position: absolute;
+  }
+
+  .street {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  em {
+    text-transform: uppercase;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .lingo-letter {
+    width: 7rem;
+    height: 7rem;
+    line-height: 7rem;
+    background: linear-gradient(223deg, #fff500, #545202);
+    border-radius: 50%;
+    -webkit-text-stroke: white 5px;
+  }
+}
+
+.introduction {
+  color: white;
+  font-size: 1.5rem;
+}
+
+.footer {
+  display: flex;
+  gap: 2rem;
+}
+
+.qr-container {
+  width: 20rem;
+  height: 20rem;
+}
+
+.qr-code {
+  position: relative;
+  z-index: 1;
+  display: block;
+}
+
+.theme-98 {
+  --letterBoxBG: #4d769c;
+  --letterBoxBorderColor: #193885;
+  --correctColor: #d441f3;
+}
+
+.theme-99 {
+  --letterBoxBG: #5b7892;
+  --letterBoxBorderColor: #8d9dac;
+  --correctColor: #8f324d;
+}
+
+.team-sign {
+  background: blue;
+  color: white;
+  text-transform: uppercase;
+  width: fit-content;
+  align-self: flex-start;
+  padding: 0.1rem 1rem;
+  font-size: 1.4rem;
+  margin-top: 9rem;
+}
+
 ol {
   padding: 0;
+  max-width: 100%;
+  border-top: 2px solid #c2bbbb;
+  border-bottom: 2px solid #c2bbbb;
 }
 
 li {
-  display: flex;
+  --numColumns: 5;
+  display: grid;
+  grid-template-columns: repeat(var(--numColumns), 1fr);
+  gap: 0.2rem;
+  background-color: #c2bbbb;
+  padding: 0.1rem 0.2rem;
+  width: fit-content;
+  width: 100%;
 }
 
 .letter-box {
   position: relative;
-  background: #4d769c;
+  background: var(--letterBoxBG);
   display: inline-flex;
-  width: 5rem;
-  height: 5rem;
+  width: 100%;
+  aspect-ratio: 1;
   align-content: center;
   justify-content: center;
   align-items: center;
-  border: 0.5rem #193885 solid;
+  _box-shadow: inset 2px 2px 4px 4px rgba(0, 0, 0, 0.4);
 }
 
 .letter-box:before,
@@ -34,7 +174,7 @@ li {
 }
 
 .letter-box:before {
-  background: #4d769c;
+  background: var(--letterBoxBG);
 }
 
 .letter-box:after {
@@ -43,15 +183,18 @@ li {
 
 .letter-box:has(.letter--incorrect-pos):after {
   border-radius: 50%;
+  width: calc(100% - 0.5rem);
+  height: calc(100% - 0.5rem);
   background-color: #e5e518;
 }
 
 .letter-box:has(.letter--correct-pos):after {
-  background-color: #d441f3;
+  background-color: var(--correctColor);
 }
 
 .letter-box:has(.letter.correct-word.letter--correct-pos):after {
-  animation: appear 0.4s var(--stateDelay) forwards, blink 1s calc(var(--stateDelay) / 1.7 + 2s) 3;
+  animation: appear 0.4s var(--stateDelay) forwards,
+    blink 1s calc(var(--stateDelay) / 1.7 + 2s) 3;
 }
 
 .letter {
@@ -59,7 +202,7 @@ li {
   justify-content: center;
   align-items: center;
   color: white;
-  font-size: 3rem;
+  font-size: 2.8rem;
   text-transform: uppercase;
   font-family: Arial;
   text-shadow: 2px 2px 1px #726a6a;
@@ -71,7 +214,22 @@ li {
 }
 
 .letter.correct-word {
-  animation: appear 0.4s var(--delay) forwards, rotate 1s calc(var(--stateDelay) / 1.5 + 2s) 3;
+  animation: appear 0.4s var(--delay) forwards,
+    rotate 1s calc(var(--stateDelay) / 1.5 + 2s) 3;
+}
+
+input,
+button {
+  font-size: inherit;
+  padding: 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+  font-size: 2rem;
 }
 
 @keyframes rotate {
@@ -88,7 +246,7 @@ li {
 
 @keyframes blink {
   from {
-    background-color: #d441f3;
+    background-color: var(--correctColor);
   }
 
   to {
