@@ -1,6 +1,10 @@
-export function MainTitle(props) {
+interface MainTitle {
+  isPlaying?: boolean;
+}
+
+export function MainTitle({ isPlaying = false }: MainTitle) {
   return (
-    <h1 className={props.isPlaying ? "in-game" : ""}>
+    <h1 className={isPlaying ? "in-game" : ""}>
       <span className="street">Swaagmans</span>
       <em>
         {"Lingo".split("").map((letter) => (
