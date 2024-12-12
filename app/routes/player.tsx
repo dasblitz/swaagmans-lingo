@@ -39,6 +39,7 @@ export default function Player() {
     onMessage(evt) {
       console.log("client message received");
       const data = JSON.parse(evt.data) as State;
+      console.log(data);
       setGameState(data);
     },
   });
@@ -119,6 +120,7 @@ export default function Player() {
       socket.id === gameState?.currentPlayer?.id ? (
         <>
           <p>Jij bent aan de beurt</p>
+          <p className="score-board">Score: {gameState?.currentPlayer.score}</p>
           <Attempt gameState={gameState} />
           <form onSubmit={handleSubmitGuess}>
             <input type="text" name="guess" onChange={handleOnChangeGuess} />
@@ -128,7 +130,7 @@ export default function Player() {
       ) : null}
       {gameState?.state === "playing" &&
       socket.id !== gameState?.currentPlayer?.id ? (
-        <p>Wait for your turn</p>
+        <p>Wacht op je beurt</p>
       ) : null}
     </>
   );

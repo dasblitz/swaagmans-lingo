@@ -20,7 +20,8 @@ function createMutableGame(connectionState: Party.ConnectionState<State>) {
               guess: attempt.guess,
               result: {
                 correctPosition: [...attempt.result.correctPosition],
-                wrongPosition: [...attempt.result.wrongPosition]
+                wrongPosition: [...attempt.result.wrongPosition],
+                wordCorrect: attempt.result.wordCorrect,
               },
             })),
           ],
@@ -31,38 +32,41 @@ function createMutableGame(connectionState: Party.ConnectionState<State>) {
 }
 
 function checkWord(guess: string) {
-  const correctWordLetters = CURRENT_WORD.split("")
-  const correctIndexes: number[] = [];
+  const correctWordLetters = CURRENT_WORD.split("");
+  const correctPositionIds: number[] = [];
   const wrongPosition = new Map();
-  
-  guess.split("").map((letter: string, index: number) => {
 
+  guess.split("").map((letter: string, index: number) => {
     const originIndex = correctWordLetters.indexOf(letter);
-    const isCorrectPosition = index === originIndex
+    const isCorrectPosition = index === originIndex;
 
     // letter exists and is in correct position
     if (isCorrectPosition) {
-      correctIndexes.push(index)
+      correctPositionIds.push(index);
     }
   });
-  
-  
-  guess.split("").map((letter: string, index: number) => {
 
+  guess.split("").map((letter: string, index: number) => {
     const originIndex = correctWordLetters.indexOf(letter);
     const hasLetter = originIndex > -1;
 
     // check if letter exists in word but is not in the correct position
     if (
-      hasLetter && !wrongPosition.get(originIndex) && !correctIndexes.includes(originIndex)
+      hasLetter &&
+      !wrongPosition.get(originIndex) &&
+      !correctPositionIds.includes(originIndex)
     ) {
-      wrongPosition.set(originIndex, index)
+      wrongPosition.set(originIndex, index);
     }
   });
 
+  const wrongPositionIds = [...wrongPosition.values()];
+
   return {
-    correctPosition: correctIndexes,
-    wrongPosition: [...wrongPosition.values()]
+    correctPosition: correctPositionIds,
+    wrongPosition: wrongPositionIds,
+    wordCorrect: correctPositionIds.length === correctWordLetters.length,
+    score: correctPositionIds.length * 10 + wrongPositionIds.length * 2,
   };
 }
 
@@ -74,7 +78,7 @@ export default class MyRemix implements Party.Server {
 
   // we'll store the state in memory
   game: State = {
-    hint: ['t'],
+    hint: ["t"],
     players: [],
     state: "idle",
   };
@@ -122,10 +126,11 @@ export default class MyRemix implements Party.Server {
     console.log({ data });
     switch (data.message) {
       case "playerJoin": {
-        console.log(this.game.players.length);
+        console.log("players", this.game.players.length);
         this.game.players.push({
           id: sender.id,
           ...data.player,
+          score: 0,
           turns: [],
           lingo: [],
         });
@@ -141,20 +146,31 @@ export default class MyRemix implements Party.Server {
         const turns = this.game.currentPlayer?.turns;
         let currentTurn;
         const result = checkWord(data.guess);
+
         const guess = String(data.guess);
 
         if (Array.isArray(turns) && turns.length > 0) {
           console.log("push guess to latest attempts");
 
           currentTurn = turns.at(turns.length - 1);
+          currentTurn?.attempts.push({ guess, result });
 
-          if (currentTurn) {
-            currentTurn.attempts.push({ guess, result });
+          if (
+            this.game.currentPlayer &&
+            currentTurn?.attempts &&
+            result.wordCorrect
+          ) {
+            this.game.currentPlayer.score +=
+              500 / (currentTurn.attempts.length ?? 1);
           }
         } else {
           console.log("create new attempts");
 
           turns?.push({ attempts: [{ guess, result }] });
+
+          if (this.game.currentPlayer && result.wordCorrect) {
+            this.game.currentPlayer.score += 500;
+          }
         }
       }
     }

@@ -5,21 +5,25 @@
 // (a total count of all connections and a count of connections from each country)
 
 export interface Player {
-  id: string, 
-  name: string, 
-  score: number, 
+  id: string;
+  name: string;
+  score: number;
   turns: {
-    attempts: {guess: string, result: {
-      correctPosition: number[],
-      wrongPosition: number[]
-    }}[]
-  }[], 
-  lingo: number[]
+    attempts: {
+      guess: string;
+      result: {
+        correctPosition: number[];
+        wrongPosition: number[];
+        wordCorrect: boolean;
+      };
+    }[];
+  }[];
+  lingo: number[];
 }
 
 export interface State {
-  hint: string[]
-  players: Array<Player>
-  currentPlayer?: Player
-  state: 'idle' | 'playing' | 'finished'
+  hint: string[];
+  players: Array<Player>;
+  currentPlayer?: Player;
+  state: "idle" | "playing" | "finished";
 }
