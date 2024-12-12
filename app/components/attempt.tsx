@@ -82,6 +82,14 @@ async function playSounds(
   }
 }
 
+function getHasNewAttempt(
+  wordGuessed: boolean,
+  previousAttempt: boolean,
+  nrOfAttempts = 0
+) {
+  return !wordGuessed && previousAttempt && nrOfAttempts < 5;
+}
+
 export function Attempt({ gameState }: AttemptProps) {
   if (!gameState.currentPlayer) {
     return;
@@ -98,8 +106,15 @@ export function Attempt({ gameState }: AttemptProps) {
     playSounds(previousAttempt?.guess, previousAttempt?.result, wordGuessed);
   }
 
-  const remainingLines =
-    5 - (currentTurn?.attempts.length ?? 0) - (previousAttempt ? 1 : 0);
+  const nrOfPreviousAttempts = currentTurn?.attempts.length ?? 0;
+
+  const hasNewAttempt = getHasNewAttempt(
+    wordGuessed,
+    !!previousAttempt,
+    nrOfPreviousAttempts
+  );
+
+  const remainingLines = 5 - nrOfPreviousAttempts - (hasNewAttempt ? 1 : 0);
 
   // TODO: add check to see if a letter has changed compared to the previous turn if so, always add the delay even if it's correct
   // const previousAttempt = currentTurn?.attempts.at(attemptIndex -1) || null
@@ -145,11 +160,9 @@ export function Attempt({ gameState }: AttemptProps) {
           );
         })}
         {/* Add the line for the new attempt, showing only letters in the correct place */}
-        {previousAttempt &&
-        !wordGuessed &&
-        (currentTurn?.attempts?.length || 0) < 5 ? (
+        {hasNewAttempt ? (
           <li key={`newAttempt-${remainingLines}`}>
-            {previousAttempt.guess.split("").map((letter, index) => (
+            {previousAttempt?.guess.split("").map((letter, index) => (
               <span
                 className="letter-box"
                 key={`last-attempt-${letter}-${index}`}
