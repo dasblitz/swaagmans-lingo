@@ -4,26 +4,32 @@
 // Keeping this simple, we send only one type of message
 // (a total count of all connections and a count of connections from each country)
 
-export interface Player {
-  id: string;
-  name: string;
+interface AttemptResult {
+  correctPosition: number[];
+  wrongPosition: number[];
+  wordCorrect: boolean;
+}
+
+interface Attempt {
+  guess: string;
+  result: AttemptResult;
+}
+
+interface Turn {
+  attempts: Attempt[];
+}
+
+interface HighScore {
+  playerName: string;
   score: number;
-  turns: {
-    attempts: {
-      guess: string;
-      result: {
-        correctPosition: number[];
-        wrongPosition: number[];
-        wordCorrect: boolean;
-      };
-    }[];
-  }[];
-  lingo: number[];
 }
 
 export interface State {
   hint: string[];
   players: Array<Player>;
+  highScores: HighScore[];
   currentPlayer?: Player;
-  state: "idle" | "playing" | "finished";
+  currentWordIndex: number;
+  currentWord: string;
+  state: "idle" | "introduction" | "playing" | "finished";
 }

@@ -5,6 +5,11 @@ import { Attempt, getAttemptLines } from "./attempt";
 import { useSearchParams } from "@remix-run/react";
 import { MainTitle } from "./main-title";
 
+import { gameAudioConfig } from "~/sound/game-audio";
+import { Howl, Howler } from "howler";
+
+// Howler.volume(1.4);
+
 const generateRoom = () => {
   return Math.floor(Math.random() * 10000);
 };
@@ -19,6 +24,22 @@ export default function NewGameScreen({ qr }: NewGameScreenProps) {
   const gameRoomParam = searchParams.get("game-room") as unknown as number;
   const [gameState, setGameState] = useState<State | undefined>();
   const [gameId] = useState<number>(gameRoomParam || generateRoom());
+  const [gameAudio, setGameAudio] = useState<Howl>();
+
+  const highScores = gameState?.highScores.slice(0, 10);
+  const longestName =
+    highScores?.reduce((prev, next): number => {
+      return Math.max(prev, next.playerName.length);
+    }, 0) || 5;
+
+  const adjustedHighScores = highScores?.map((highscore) => {
+    while (highscore.playerName.length < longestName) {
+      highscore.playerName = highscore.playerName.concat(".");
+    }
+
+    return highscore;
+  });
+  const gridSize = longestName + 1;
 
   usePartySocket({
     // connect to the party defined by 'lingo.ts'
@@ -32,9 +53,40 @@ export default function NewGameScreen({ qr }: NewGameScreenProps) {
     onMessage(evt) {
       console.log("client message");
       const data = JSON.parse(evt.data) as State;
+
+      if (
+        data.state === "introduction" &&
+        gameState?.state !== "introduction"
+      ) {
+        // play intro tune]
+        gameAudio?.play("intro");
+      }
+
+      console.log(data.state, gameState?.state);
+      if (data.state === "idle" && gameState?.state === "playing") {
+        // play intro tune]
+        gameAudio?.play("end");
+      }
       setGameState(data);
     },
   });
+
+  useEffect(() => {
+    const initAudio = function () {
+      const gameAudio = new Howl(gameAudioConfig);
+      setGameAudio(gameAudio);
+      // gameAudio.once("end", () => {
+      //   gameAudio.play("you-can-start");
+      // });
+      document.removeEventListener("click", initAudio);
+    };
+
+    document.addEventListener("click", initAudio);
+
+    return () => {
+      document.removeEventListener("click", initAudio);
+    };
+  }, []);
 
   useEffect(() => {
     if (!gameRoomParam) {
@@ -65,49 +117,65 @@ export default function NewGameScreen({ qr }: NewGameScreenProps) {
               ))}
               <section className="footer">
                 <div>
-                  <h2>Top 5</h2>
+                  <h2 className="team-sign">Top 10</h2>
                   <ol>
-                    <li
-                      style={{
-                        "--numColumns": `6`,
-                      }}
-                    >
-                      {"Arjen".split("").map((letter, index) => (
+                    {adjustedHighScores?.map((highScore, highScoreIndex) => (
+                      <li
+                        key={`${highScore.playerName}-${highScore.score}-${highScoreIndex}`}
+                        style={{
+                          "--numColumns": gridSize,
+                        }}
+                      >
+                        {highScore.playerName.split("").map((letter, index) => (
+                          <span
+                            key={`highscore-${letter}-${highScoreIndex}-${index}`}
+                            className="letter-box"
+                            style={{
+                              "--stateDelay": `${index * 0.3 + 1.3}s`,
+                            }}
+                          >
+                            <span
+                              className={`letter ${
+                                highScoreIndex === 0
+                                  ? "letter--correct-pos correct-word"
+                                  : ""
+                              }`}
+                              style={{
+                                "--delay": `${index * 0.2}s`,
+                              }}
+                            >
+                              {letter}
+                            </span>
+                          </span>
+                        ))}
                         <span
-                          key={`highscore-${letter}`}
+                          key={`highscore-score`}
                           className="letter-box"
                           style={{
-                            "--stateDelay": `${index * 0.3 + 1.3}s`,
+                            "--stateDelay": `${gridSize * 0.3 + 1.3}s`,
                           }}
                         >
                           <span
-                            className="letter letter--correct-pos correct-word"
+                            className={`letter ${
+                              highScoreIndex === 0
+                                ? "letter--correct-pos correct-word"
+                                : ""
+                            }`}
                             style={{
-                              "--delay": `${index * 0.2}s`,
+                              "--delay": `${gridSize * 0.2}s`,
                             }}
                           >
-                            {letter}
+                            {highScore.score}
                           </span>
                         </span>
-                      ))}
-                      <span
-                        key={`highscore-score`}
-                        className="letter-box"
-                        style={{
-                          "--stateDelay": `${5 * 0.3 + 1.3}s`,
-                        }}
-                      >
-                        <span
-                          className="letter letter--correct-pos correct-word"
-                          style={{
-                            "--delay": `${5 * 0.2}s`,
-                          }}
-                        >
-                          100
-                        </span>
-                      </span>
-                    </li>
-                    {getAttemptLines(4, false, [""], 6)}
+                      </li>
+                    ))}
+                    {getAttemptLines(
+                      10 - (highScores?.length ?? 0),
+                      false,
+                      [""],
+                      gridSize
+                    )}
                   </ol>
                 </div>
                 <div className="qr-container">
@@ -122,13 +190,17 @@ export default function NewGameScreen({ qr }: NewGameScreenProps) {
                 </div>
               </section>
             </>
+          ) : gameState.state === "introduction" ? (
+            <p className="explanation">
+              Raad zoveel mogelijk woorden in 1 minuut!
+            </p>
           ) : (
             <>
               <MainTitle isPlaying />
               <p className={"team-sign"}>
                 Team: {gameState?.currentPlayer?.name}
               </p>
-              <Attempt gameState={gameState} />
+              <Attempt gameState={gameState} gameAudio={gameAudio} />
             </>
           )}
         </div>

@@ -40,24 +40,6 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
 export default function Index() {
   const { qr } = useLoaderData<typeof loader>();
-  const gameAudio = new Howl(gameAudioConfig);
-
-  useEffect(() => {
-    const initAudio = function () {
-      gameAudio.play("intro");
-
-      gameAudio.once("end", () => {
-        gameAudio.play("you-can-start");
-      });
-      document.removeEventListener("click", initAudio);
-    };
-
-    document.addEventListener("click", initAudio);
-
-    return () => {
-      document.removeEventListener("click", initAudio);
-    };
-  }, []);
 
   return (
     <div style={{ fontFamily: "system-ui, sans-serif", lineHeight: "1.8" }}>

@@ -1,11 +1,9 @@
 import { State } from "messages";
-import { gameAudioConfig } from "~/sound/game-audio";
 import { Howl } from "howler";
-
-const gameAudio = new Howl(gameAudioConfig);
 
 interface AttemptProps {
   gameState: State;
+  gameAudio: Howl;
 }
 
 export const getAttemptLines = (
@@ -14,6 +12,10 @@ export const getAttemptLines = (
   hint: string[],
   numColumns = 5
 ) => {
+  if (remainingLines <= 0) {
+    return;
+  }
+
   const attemptLines = [];
 
   for (let i = 0; i < remainingLines; i++) {
@@ -51,10 +53,15 @@ const delay = (timeout: number) => {
 };
 
 async function playSounds(
+  gameAudio: Howl,
   guess: string,
   result: { correctPosition: number[]; wrongPosition: number[] },
   wordGuessed: boolean
 ) {
+  if (!gameAudio) {
+    return;
+  }
+
   const letters = guess.split("");
 
   console.log("playSounds", letters);
@@ -90,7 +97,7 @@ function getHasNewAttempt(
   return !wordGuessed && previousAttempt && nrOfAttempts < 5;
 }
 
-export function Attempt({ gameState }: AttemptProps) {
+export function Attempt({ gameState, gameAudio }: AttemptProps) {
   if (!gameState.currentPlayer) {
     return;
   }
@@ -103,7 +110,12 @@ export function Attempt({ gameState }: AttemptProps) {
   const wordGuessed = previousAttempt?.result.correctPosition.length === 5;
 
   if ((previousAttempt?.guess, previousAttempt?.result)) {
-    playSounds(previousAttempt?.guess, previousAttempt?.result, wordGuessed);
+    playSounds(
+      gameAudio,
+      previousAttempt?.guess,
+      previousAttempt?.result,
+      wordGuessed
+    );
   }
 
   const nrOfPreviousAttempts = currentTurn?.attempts.length ?? 0;
@@ -121,7 +133,7 @@ export function Attempt({ gameState }: AttemptProps) {
   return (
     <>
       <ol>
-        {currentTurn?.attempts.map((attempt, attemptIndex) => {
+        {currentTurn?.attempts.map((attempt, attemptIndex: number) => {
           const currentCorrect = attempt.result.correctPosition.length === 5;
 
           return (
