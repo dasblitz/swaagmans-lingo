@@ -1,0 +1,71 @@
+{
+  "resources": [
+    "mygameaudio.ogg",
+    "mygameaudio.m4a",
+    "mygameaudio.mp3",
+    "mygameaudio.ac3"
+  ],
+  "spritemap": {
+    "tune-loop": {
+      "start": 0,
+      "end": 15.880997732426303,
+      "loop": true
+    },
+    "good-luck": {
+      "start": 17,
+      "end": 17.718367346938777,
+      "loop": false
+    },
+    "intro": {
+      "start": 19,
+      "end": 38.31755102040816,
+      "loop": false
+    },
+    "introduce-yourself": {
+      "start": 40,
+      "end": 41.39174603174603,
+      "loop": false
+    },
+    "letter-correct": {
+      "start": 43,
+      "end": 43.23074829931973,
+      "loop": false
+    },
+    "letter-wrong-position": {
+      "start": 45,
+      "end": 45.25396825396825,
+      "loop": false
+    },
+    "letter-wrong": {
+      "start": 47,
+      "end": 47.23074829931973,
+      "loop": false
+    },
+    "new-letter": {
+      "start": 49,
+      "end": 49.76480725623583,
+      "loop": false
+    },
+    "word-correct-1": {
+      "start": 51,
+      "end": 52.856145124716555,
+      "loop": false
+    },
+    "word-correct-2": {
+      "start": 54,
+      "end": 56.4366439909297,
+      "loop": false
+    },
+    "word-correct-3": {
+      "start": 58,
+      "end": 61.01714285714286,
+      "loop": false
+    },
+    "you-can-start": {
+      "start": 63,
+      "end": 64.13632653061225,
+      "loop": false
+    }
+  },
+  "autoplay": "tune-loop"
+}

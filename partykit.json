@@ -4,6 +4,7 @@
   "main": "party/server.ts",
   "compatibilityDate": "2024-01-22",
   "parties": {
-    "geo": "party/geo.ts"
+    "geo": "party/geo.ts",
+    "lingo": "party/lingo.ts"
   }
 }

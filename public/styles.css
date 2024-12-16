@@ -1,0 +1,299 @@
+:root {
+  --rotateY: 0;
+}
+
+/* General Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  padding: 1rem;
+  background-image: url("/lingo-bg2.jpg");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-blend-mode: multiply;
+  background-position: center;
+}
+
+.presence {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+h1 {
+  font-family: serif;
+  color: #ffffff;
+  font-size: 4.5rem;
+  text-align: center;
+  font-weight: 900;
+  line-height: 1;
+  margin-top: 2rem;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+
+  &.in-game {
+    transform: scale(0.6) translate3d(-72%, -54%, 0);
+  }
+
+  .street {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  em {
+    text-transform: uppercase;
+    display: flex;
+    justify-items: center;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .lingo-letter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 4rem;
+    aspect-ratio: 1;
+    background: linear-gradient(223deg, #fff500, #a4a000);
+    border-radius: 50%;
+    -webkit-text-stroke: white 3px;
+    font-size: 2rem;
+  }
+}
+
+.introduction {
+  color: white;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  margin-top: 2.2rem;
+  margin-bottom: 2rem;
+  text-shadow: 1px 1px black;
+  pointer-events: none;
+}
+
+.player-screen {
+  position: relative;
+  max-width: 20rem;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+.player-header {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  color: white;
+  font-size: 1.5rem;
+  line-height: 1.4;
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px black;
+}
+
+.explanation {
+  font-size: 3.5rem;
+  color: white;
+  text-align: center;
+  max-width: 40rem;
+  margin-top: 3rem;
+  text-shadow: 1px 2px black;
+}
+
+.footer {
+  display: flex;
+  gap: 2rem;
+}
+
+.qr-container {
+  width: 20rem;
+  height: 20rem;
+}
+
+.qr-code {
+  position: relative;
+  z-index: 1;
+  display: block;
+  width: 18rem;
+}
+
+.theme-98 {
+  --letterBoxBG: #395fb8;
+  --letterBoxBorderColor: #193885;
+  --correctColor: #c40b14;
+}
+
+.theme-99 {
+  --letterBoxBG: #5b7892;
+  --letterBoxBorderColor: #8d9dac;
+  --correctColor: #8f324d;
+}
+
+.team-sign {
+  background: blue;
+  color: white;
+  text-transform: uppercase;
+  width: fit-content;
+  align-self: flex-start;
+  padding: 0.1rem 1rem;
+  font-size: 1.4rem;
+}
+
+.score-board {
+  color: white;
+}
+
+ol {
+  padding: 0;
+  width: 100%;
+  margin-bottom: 2rem;
+  border-top: 2px solid #fff0f0;
+  border-bottom: 2px solid #fff0f0;
+  opacity: 0.9;
+}
+
+@media screen and (max-width: 50rem) {
+  ol {
+    max-width: 20rem;
+  }
+}
+
+li {
+  --numColumns: 5;
+  display: grid;
+  grid-template-columns: repeat(var(--numColumns), 1fr);
+  gap: 0.2rem;
+  background-color: #fff0f0;
+  padding: 0.1rem 0.2rem;
+  width: fit-content;
+  width: 100%;
+}
+
+.letter-box {
+  position: relative;
+  background: var(--letterBoxBG);
+  display: inline-flex;
+  width: 100%;
+  aspect-ratio: 1;
+  align-content: center;
+  justify-content: center;
+  align-items: center;
+  _box-shadow: inset 2px 2px 4px 4px rgba(0, 0, 0, 0.4);
+}
+
+.letter-box:before,
+.letter-box:after {
+  position: absolute;
+  display: block;
+  content: " ";
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  animation: appear 0.4s var(--stateDelay) forwards;
+}
+
+.letter-box:before {
+  background: var(--letterBoxBG);
+}
+
+.letter-box:after {
+  z-index: 1;
+}
+
+.letter-box:has(.letter--incorrect-pos):after {
+  border-radius: 50%;
+  width: calc(100% - 0.5rem);
+  height: calc(100% - 0.5rem);
+  background-color: #e5e518;
+}
+
+.letter-box:has(.letter--correct-pos):after {
+  background-color: var(--correctColor);
+}
+
+.letter-box:has(.letter.correct-word.letter--correct-pos):after {
+  animation: appear 0.4s var(--stateDelay) forwards,
+    blink 1s calc(var(--stateDelay) / 1.7 + 2s) 3;
+}
+
+.letter {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  font-family: Arial;
+  text-shadow: 2px 2px 1px #433d3d9e;
+  --delay: 0;
+  opacity: 0;
+  position: relative;
+  z-index: 2;
+  animation: appear 0.4s var(--delay) forwards;
+}
+
+.letter.correct-word {
+  animation: appear 0.4s var(--delay) forwards,
+    rotate 1s calc(var(--stateDelay) / 1.5 + 2s) 3;
+}
+
+input,
+button {
+  font-size: inherit;
+  padding: 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 1rem;
+  font-size: 2rem;
+}
+
+@keyframes rotate {
+  from {
+    opacity: 1;
+    transform: rotateY(0deg);
+  }
+
+  to {
+    opacity: 1;
+    transform: rotateY(360deg);
+  }
+}
+
+@keyframes blink {
+  from {
+    background-color: var(--correctColor);
+  }
+
+  to {
+    background-color: white;
+  }
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
