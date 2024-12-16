@@ -103,6 +103,7 @@ h1 {
   font-size: 1.5rem;
   line-height: 1.4;
   margin-bottom: 1rem;
+  text-shadow: 1px 1px black;
 }
 
 .explanation {
@@ -128,6 +129,7 @@ h1 {
   position: relative;
   z-index: 1;
   display: block;
+  width: 18rem;
 }
 
 .theme-98 {

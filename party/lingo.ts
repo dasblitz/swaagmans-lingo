@@ -10,7 +10,23 @@ import { Player } from "./player";
 
 const highscores: { playerName: string; score: number }[] = [];
 
-const words = ["samen", "thuis", "hekje", "toren"];
+let words = [
+  "samen",
+  "thuis",
+  "hekje",
+  "toren",
+  "paden",
+  "weide",
+  "klomp",
+  "wagen",
+  "kroeg",
+  "kerks",
+  "sport",
+  "griet",
+  "broek",
+  "markt",
+  "dalen",
+];
 
 function checkWord(guess: string, currentWord: string) {
   const correctWordLetters = currentWord.split("");
@@ -195,6 +211,7 @@ export default class MyRemix implements Party.Server {
     });
 
     this.sortHighScores();
+    words = _.shuffle(words);
 
     this.game = {
       state: "idle",

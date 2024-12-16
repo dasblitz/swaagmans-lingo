@@ -6,12 +6,17 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
-export function links(){
+export function links() {
   return {
-    rel: 'stylesheet',
-    href: '/styles.css'
-  }
+    rel: "stylesheet",
+    href: "/styles.css",
+  };
 }
+import type { HeadersFunction } from "@remix-run/node"; // or cloudflare/deno
+
+export const headers: HeadersFunction = () => ({
+  "User-Agent": "arjen",
+});
 
 export default function App() {
   return (
@@ -21,7 +26,6 @@ export default function App() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
-
       </head>
       <body className="theme-98">
         <Outlet />

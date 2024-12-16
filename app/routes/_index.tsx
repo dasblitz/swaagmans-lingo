@@ -31,7 +31,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
   let qr: string = "";
   if (gameRoom) {
     qr = (await generateQR(
-      `http://192.168.1.77:1999/player?game-room=${gameRoom}`
+      `https://85d3-62-45-87-108.ngrok-free.app/player?game-room=${gameRoom}`
     )) as unknown as string;
   }
 

@@ -9,6 +9,12 @@ import { SubmitGuessForm } from "~/components/submit-guess-form";
 import { Howl } from "howler";
 import { gameAudioConfig } from "../sound/game-audio";
 
+import type { HeadersFunction } from "@remix-run/node"; // or cloudflare/deno
+
+export const headers: HeadersFunction = () => ({
+  "User-Agent": "arjen",
+});
+
 const gameAudio = new Howl(gameAudioConfig);
 
 interface FormElements extends HTMLFormControlsCollection {

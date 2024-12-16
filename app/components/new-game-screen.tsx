@@ -17,6 +17,9 @@ const generateRoom = () => {
 interface NewGameScreenProps {
   qr: string;
 }
+
+let tuneLoopId = 0;
+let tuneIntroId = 0;
 // This is a component that will connect to the partykit backend
 // and display the players in the game.
 export default function NewGameScreen({ qr }: NewGameScreenProps) {
@@ -26,7 +29,7 @@ export default function NewGameScreen({ qr }: NewGameScreenProps) {
   const [gameId] = useState<number>(gameRoomParam || generateRoom());
   const [gameAudio, setGameAudio] = useState<Howl>();
 
-  const highScores = gameState?.highScores.slice(0, 10);
+  const highScores = gameState?.highScores.slice(0, 8);
   const longestName =
     highScores?.reduce((prev, next): number => {
       return Math.max(prev, next.playerName.length);
@@ -59,14 +62,15 @@ export default function NewGameScreen({ qr }: NewGameScreenProps) {
         gameState?.state !== "introduction"
       ) {
         // play intro tune]
+        tuneLoopId && gameAudio?.stop(tuneLoopId);
         gameAudio?.play("intro");
       }
 
       console.log(data.state, gameState?.state);
-      if (data.state === "idle" && gameState?.state === "playing") {
-        // play intro tune]
-        gameAudio?.play("end");
-      }
+      // if (data.state === "idle" && gameState?.state === "playing") {
+      //   // play intro tune]
+      //   tuneLoopId = gameAudio?.play("tune-loop");
+      // }
       setGameState(data);
     },
   });
@@ -117,7 +121,7 @@ export default function NewGameScreen({ qr }: NewGameScreenProps) {
               ))}
               <section className="footer">
                 <div>
-                  <h2 className="team-sign">Top 10</h2>
+                  <h2 className="team-sign">Top 8</h2>
                   <ol>
                     {adjustedHighScores?.map((highScore, highScoreIndex) => (
                       <li
@@ -171,9 +175,9 @@ export default function NewGameScreen({ qr }: NewGameScreenProps) {
                       </li>
                     ))}
                     {getAttemptLines(
-                      10 - (highScores?.length ?? 0),
+                      8 - (highScores?.length ?? 0),
                       false,
-                      [""],
+                      ["."],
                       gridSize
                     )}
                   </ol>

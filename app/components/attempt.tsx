@@ -85,7 +85,9 @@ async function playSounds(
   }
 
   if (wordGuessed) {
-    gameAudio.play("word-correct-3");
+    const indexes = [1, 2, 3];
+    const index = indexes[Math.floor(Math.random() * indexes.length)];
+    gameAudio.play(`word-correct-${index}`);
   }
 }
 
